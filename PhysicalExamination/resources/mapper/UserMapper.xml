@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuanyi.mapper.IUserMapper">
+	<resultMap id="UserResultMap" type="com.chuanyi.bean.User">
+		<id column="USER_ID" jdbcType="INTEGER" property="userId" />
+		<result column="USER_TEL" jdbcType="VARCHAR" property="userTel" />
+		<result column="USER_PASSWORD" jdbcType="VARCHAR" property="userPassword" />
+		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+		<result column="USER_SEX" jdbcType="VARCHAR" property="userSex" />
+		<result column="USER_AGE" jdbcType="INTEGER" property="userAge" />
+		<result column="USER_ADDRESS" jdbcType="VARCHAR" property="userAddress" />
+		<result column="USER_BLOOD" jdbcType="VARCHAR" property="userBlood" />
+		<result column="USER_BIRTH" jdbcType="VARCHAR" property="userBirth" />
+		<result column="USER_CREATE_TIME" jdbcType="VARCHAR" property="userCreateTime" />
+		<result column="USER_STATUS" jdbcType="INTEGER" property="userStatus" />
+  	</resultMap>
+<!-- 用户登录 -->
+<select id="queryUserByPwd" parameterType="com.chuanyi.bean.User" resultMap="UserResultMap">
+select USER_ID,USER_TEL,USER_PASSWORD,USER_NAME,USER_SEX,USER_AGE,USER_ADDRESS,USER_BLOOD,USER_BIRTH,USER_CREATE_TIME,USER_STATUS from T_USER where USER_Tel= #{userTel} and USER_PASSWORD= #{userPassword} and USER_STATUS!=3
+</select>
+<!-- 用户注册 -->
+<insert id="addUser" parameterType="com.chuanyi.bean.User">
+insert into T_USER(USER_ID,USER_TEL,USER_PASSWORD,USER_NAME,USER_SEX,USER_AGE,USER_ADDRESS,USER_BLOOD,USER_BIRTH,USER_CREATE_TIME,USER_STATUS)
+ values (SEQ_T_USER.NEXTVAL,#{userTel},#{userPassword},#{userName},#{userSex},#{userAge},#{userAddress},#{userBlood},to_date(#{userBirth},'YYYY-MM-DD'),sysdate,1)
+</insert>
+</mapper>

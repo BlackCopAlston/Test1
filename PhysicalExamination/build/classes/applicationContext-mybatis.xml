@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- mybatis整合 -->
+	<!-- 指定数据源配置文件 -->
+	<context:property-placeholder location="classpath:properties/db.properties" />
+	
+	<!-- 数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="name" value="${name}" />
+		<property name="password" value="${password}" />
+	</bean>
+
+	<!-- 会话工厂 必须使用MyBatis-spring整合jar包中的工厂bean。 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 加载本地的MyBatis配置文件。为了加载pagehelper插件。 -->
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 本地映射。非必要。 -->
+		<property name="mapperLocations">
+			<array>
+				<value>classpath:mapper/*.xml</value>
+			</array>
+		</property>
+	</bean>
+
+	<!-- Mapper工厂 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+		<property name="basePackage" value="com.chuanyi.mapper"></property>
+	</bean>
+
+</beans>

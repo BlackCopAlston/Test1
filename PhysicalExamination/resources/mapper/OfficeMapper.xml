@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuanyi.mapper.IOfficeMapper">
+
+	<!-- 新增科室 -->
+	<insert id="addOffice" parameterType="com.chuanyi.bean.Office">
+		insert into
+		T_OFFICE(OFFICE_ID,OFFICE_NAME,OFFICE_PARENT_ID,OFFICE_DESCRIBE,OFFICE_CREATE_TIME)
+		values(SEQ_T_OFFICE.NEXTVAL,#{officeName},#{officeParentId},#{officeDescribe},sysdate,#{officeStatus})
+	</insert>
+
+	<!-- 删除科室 -->
+	<update id="delOffice" parameterType="com.chuanyi.bean.Office">
+		update T_OFFICE set
+		OFFICE_STATUS=#{officeStatus} where
+		OFFICE_ID=#{officeId}
+	</update>
+
+	<!-- 更新科室 -->
+	<update id="updateOffice"
+		parameterType="com.chuanyi.bean.Office">
+		UPDATE T_OFFICE
+		<trim prefix="set" suffixOverrides=",">
+			<if test="officeName!=null and officeName!=''">OFFICE_NAME=#{officeName},</if>
+			<if test="officeParentId!=null and officeParentId!=''">OFFICE_PARENT_ID=#{officeParentId},</if>
+			<if test="officeDescribe!=null and officeDescribe!=''">OFFICE_DESCRIBE=#{officeDescribe},</if>
+		</trim>
+		WHERE OFFICE_ID=#{officeId}
+	</update>
+
+	<!-- 查询父级科室 -->
+	<select id="queryOfficeParent" resultType="java.util.HashMap">
+		select
+		OFFICE_ID,OFFICE_NAME,OFFICE_PARENT_ID,OFFICE_DESCRIBE,to_char(OFFICE_CREATE_TIME,'YYYY-MM-DD
+		24HH:MI:SS'),OFFICE_STATUS from T_OFFICE where OFFICE_PARENT_ID=0 and OFFICE_STATUS = 1
+	</select>
+
+	<!-- 查询二级科室 -->
+	<select id="queryOfficeSon"
+		parameterType="com.chuanyi.bean.Office" resultType="java.util.HashMap">
+		select
+		OFFICE_ID,OFFICE_NAME,OFFICE_PARENT_ID,OFFICE_DESCRIBE,to_char(OFFICE_CREATE_TIME,'YYYY-MM-DD
+		24HH:MI:SS'),OFFICE_STATUS from T_OFFICE
+		
+		<trim prefix="WHERE" prefixOverrides="AND |OR">
+
+			<if test="OFFICE_ID != 0"> AND OFFICE_ID=#{officeId}</if>
+
+			<if test="OFFICE_NAME != null and OFFICE_NAME != ''"> AND OFFICE_NAME=#{officeName}</if>
+
+			<if test="OFFICE_PARENT_ID != 0"> AND OFFICE_PARENT_ID=#{officeParentId}</if>
+
+		</trim>
+		 and OFFICE_STATUS = 1
+	</select>
+</mapper>
